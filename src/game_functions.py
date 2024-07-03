@@ -48,5 +48,5 @@ def wait_user_imagen(imagen_rect: pygame.Rect) :
         for evento in pygame.event.get() :
             if evento.type == pygame.MOUSEBUTTONDOWN :
                 if evento.key == 1:
-                    if punta_en_rectangulo(event.pos,imagen_rect):
+                    if punta_en_rectangulo(evento.pos,imagen_rect):
                         continuar = False   
