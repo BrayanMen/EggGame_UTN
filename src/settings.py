@@ -36,6 +36,8 @@ esta_roto = False
 esta_atacando = False
 atacando_en_el_aire = False
 voltear = False
+izq= False
+der= False
 
 # Listas del Juego
 
