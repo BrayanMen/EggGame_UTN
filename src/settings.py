@@ -18,7 +18,7 @@ dist_caida = 0
 
 frame_indice = 0
 siguiente_frame = 0
-speed_animacion = 0.05
+speed_animacion = 0.9
 
 coin_indice = 0
 speed_coin_animacion = 0.04
@@ -31,11 +31,11 @@ vidas = 3
 # Estados del Juego
 
 is_running = True
-en_suelo = True
-esta_roto = True
-esta_atacando = True
-atacando_en_el_aire = True
-voltear = True
+en_suelo = False
+esta_roto = False
+esta_atacando = False
+atacando_en_el_aire = False
+voltear = False
 
 # Listas del Juego
 
