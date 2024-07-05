@@ -1,6 +1,7 @@
 import os
 import pygame
 from settings import *
+import random
 
 def image_frames_list_game(lista, path:str,num_image: int,width_image:int, height_image: int)->list[pygame.Surface]:
     base_path = os.path.dirname(__file__)
@@ -26,27 +27,34 @@ def animacion_frames(lista_frame:list, indice_frame:int, animacion_speed:float):
         indice_frame = 0
     frame = lista_frame[int(indice_frame)]
     return frame, indice_frame
+
+def lanzar_cuchillos(lista:list):
+    SPRITE_WIDTH = 32
+    SPRITE_HEIGHT = 32
+    proj_x = random.randint(799,WIDTH_SCREEN)
+    cuchillo = pygame.Rect(proj_x, random.randint(120, HEIGHT_SCREEN-50), SPRITE_WIDTH, SPRITE_HEIGHT)
+    lista.append(cuchillo)
     
     
-def mostrar_texto(superficie,texto,fuente:pygame.font.Font ,coordenada,color=(255,255,255), bg=(0,0,0)):
-    sticker = fuente.render(texto,True, color,bg)
-    rect = sticker.get_rect()
-    rect.center = coordenada
-    superficie.blit(sticker,rect)
+# def mostrar_texto(superficie,texto,fuente:pygame.font.Font ,coordenada,color=(255,255,255), bg=(0,0,0)):
+#     sticker = fuente.render(texto,True, color,bg)
+#     rect = sticker.get_rect()
+#     rect.center = coordenada
+#     superficie.blit(sticker,rect)
     
-def wait_user(tecla):
-    continuar = True
-    while continuar:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.type == tecla:
-                    continuar = False
+# def wait_user(tecla):
+#     continuar = True
+#     while continuar:
+#         for event in pygame.event.get():
+#             if event.type == pygame.KEYDOWN:
+#                 if event.type == tecla:
+#                     continuar = False
                     
-def wait_user_imagen(imagen_rect: pygame.Rect) :
-    continuar = True
-    while continuar :
-        for evento in pygame.event.get() :
-            if evento.type == pygame.MOUSEBUTTONDOWN :
-                if evento.key == 1:
-                    if punta_en_rectangulo(evento.pos,imagen_rect):
-                        continuar = False   
+# def wait_user_imagen(imagen_rect: pygame.Rect) :
+#     continuar = True
+#     while continuar :
+#         for evento in pygame.event.get() :
+#             if evento.type == pygame.MOUSEBUTTONDOWN :
+#                 if evento.key == 1:
+#                     if punta_en_rectangulo(evento.pos,imagen_rect):
+#                         continuar = False   
