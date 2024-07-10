@@ -52,7 +52,7 @@ def ranking_screen(screen):
         clock.tick(30)
 
 def game_over_screen(screen, puntaje):
-    global is_running
+    global is_running, screen_menu
     clock = pygame.time.Clock()
     input_box = pygame.Rect(settings.WIDTH_SCREEN // 2 - 100, settings.HEIGHT_SCREEN // 2, 250, 80)
     color_inactive = pygame.Color('goldenrod1')
@@ -76,7 +76,6 @@ def game_over_screen(screen, puntaje):
         guardar_archivo_csv("top_rank", lista_scores)
         text = ''
         main(screen)
-        
     while is_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:    
@@ -88,6 +87,9 @@ def game_over_screen(screen, puntaje):
                 else:
                     active = False
                     color = color_active if active else color_inactive
+                if exit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    sys.exit()
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
@@ -107,6 +109,7 @@ def game_over_screen(screen, puntaje):
         screen.blit(txt_surface, (input_box.x, input_box.y))
 
         draw_button("Retry", retry_button_rect, (0, 255, 0), (0, 200, 0), 3, font, screen, action=reset)
+        screen.blit(exit_button_image, exit_button_rect)
 
         pygame.display.flip()
         clock.tick(30)
