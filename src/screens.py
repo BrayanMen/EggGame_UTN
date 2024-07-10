@@ -43,8 +43,6 @@ def ranking_screen(screen):
         pygame.draw.rect(screen, tabla_border_color, tabla_rect, tabla_border,99)
 
         mostrar_puntajes(screen, font, WIDTH_SCREEN, HEIGHT_SCREEN)  
-        # pygame.draw.rect(screen, (0, 0, 255), back_button_rect)
-        # back_text = font.render("Back", True, (255, 255, 255))
         screen.blit(logo_image, logo_rect.topleft)
         screen.blit(back_image_scaled, back_rect_scaled.topleft)
         
@@ -182,8 +180,10 @@ def main(screen):
                     if not esta_roto:
                         if en_suelo:
                             esta_atacando = True
+                            lanzar_efecto_espada(egg_rect, poderes, voltear)
                         elif not en_suelo:
                             atacando_en_el_aire = True
+                            lanzar_efecto_espada(egg_rect, poderes, voltear)
                 if event.key == pygame.K_LEFT:
                     izq =True  
                 if event.key == pygame.K_RIGHT:
@@ -260,6 +260,7 @@ def main(screen):
             else:
                 if esta_atacando:
                     image_egg,frame_indice = animacion_frames(EGG_ATAQUE,frame_indice,speed_animacion)
+                    
                     esta_atacando = False
                 elif atacando_en_el_aire:
                     image_egg,frame_indice = animacion_frames(EGG_ATAQUE_AIRE,frame_indice,0.009)
@@ -312,6 +313,19 @@ def main(screen):
             if egg_rect.colliderect(cuchillo["rect"]):
                 vidas -= 1
                 proyectiles.remove(cuchillo)
+                
+        for poder in poderes[:]:
+            poder["rect"].x += poder["velocidad"]
+            if poder["rect"].right < 0 or poder["rect"].left > WIDTH_SCREEN:
+                poderes.remove(poder)
+            else:
+                for cuchillo in proyectiles[:]:
+                    if poder["rect"].colliderect(cuchillo["rect"]):
+                        poderes.remove(poder)
+                        proyectiles.remove(cuchillo)
+                        puntaje_acc += 1
+                        break
+                    
         if random.randint(0, 300) < 2:
             lanzar_cuchillos(proyectiles)
                               
@@ -326,6 +340,12 @@ def main(screen):
             screen.blit(plataforma["image"], plataforma["rect"].topleft)
         for cuchillo in proyectiles:
             screen.blit(knife_image, cuchillo["rect"].topleft)
+        for ataque in poderes:
+            image_power = animacion_frames_coin(egg_power_frame, frame_indice,speed_animacion)
+            if voltear:
+                screen.blit(pygame.transform.flip(image_power, True, False), ataque["rect"].topleft)
+            else:
+                screen.blit(image_power, ataque["rect"].topleft)
         
         if voltear:
             screen.blit(pygame.transform.flip(image_egg, True, False), egg_rect)
@@ -355,14 +375,13 @@ def options_screen(screen):
     back_image = image_scale_game("assets/items/boton_back", 300, 100)
     back_rect = back_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN - 100))
 
-    canciones = ["music0.mp3", "music1.mp3", "music2.mp3", "music3.mp3", "music4.mp3"]
-    canciones_nombres = ["Canción 1", "Canción 2", "Canción 3", "Canción 4", "Canción 5"]
+    canciones_json = cargar_archivo_json("musica")
     
     base_path = os.path.dirname(__file__)
          
     # Inicializar la música
     current_song = None
-    pygame.mixer.music.load(os.path.join(base_path, "./assets/music/" + canciones[0]))
+    pygame.mixer.music.load(os.path.join(base_path, "./assets/music/" + canciones_json[0]["musica"]))
     pygame.mixer.music.play(-1)  
 
     while is_running_options:
@@ -391,7 +410,8 @@ def options_screen(screen):
 
         y = 150
 
-        for i, nombre in enumerate(canciones_nombres):
+        for i in range(len(canciones_json)):
+            nombre = canciones_json[i]["nombre"]
             song_rect = pygame.Rect(settings.WIDTH_SCREEN // 4, y, settings.WIDTH_SCREEN // 2, 50)
             if song_rect.collidepoint(mouse_pos):
                 pygame.draw.rect(screen, (200, 200, 255), song_rect)
@@ -403,7 +423,7 @@ def options_screen(screen):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if song_rect.collidepoint(event.pos):
-                    selected_song = canciones[i]
+                    selected_song = canciones_json[i]["musica"]
                     pygame.mixer.music.load(os.path.join(base_path,"assets/music/" + selected_song))
                     pygame.mixer.music.play(-1)
             

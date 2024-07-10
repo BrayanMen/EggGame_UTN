@@ -18,6 +18,8 @@ EGG_ATAQUE = [egg_frames[6],egg_frames[7],egg_frames[8],egg_frames[1]]
 EGG_ATAQUE_AIRE = [egg_frames[9],egg_frames[10],egg_frames[11],egg_frames[4]]
 EGG_ROTO = [egg_frames[12],egg_frames[13],egg_frames[14]]
 
+# Frame Power
+egg_power_frame = image_frames_list_game(power_image, "assets/attacks/atackframe",2,70,70)
 # Plataformas Frames
 platforms_frames = image_frames_list_game(platforms_images,"./assets/plataforms/plataforms",20,random.randint(200, 400),100)
 
@@ -28,3 +30,14 @@ bg_game = image_scale_game("assets/background/night_autumn", WIDTH_SCREEN, HEIGH
 coins_frames = image_frames_list_game(coins_images,"assets/coin/goldCoin",8, 64,64)
 knife_image = image_scale_game("assets/items/knife",60,50)
 heart_image = image_scale_game("assets/items/Heart",60,60)
+
+
+canciones = ["music0.mp3", "music1.mp3", "music2.mp3", "music3.mp3", "music4.mp3"]
+canciones_nombres = ["Cancion 1", "Cancion 2", "Cancion 3", "Cancion 4", "Cancion 5"]
+
+musica_json = []
+for i in range(len(canciones)):
+    canc_json = {"musica": canciones[i], "nombre": canciones_nombres[i]}
+    musica_json.append(canc_json)
+    
+guardar_archivo_json(musica_json, "musica")

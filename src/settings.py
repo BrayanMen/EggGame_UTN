@@ -49,9 +49,10 @@ coins = []
 hearts = []
 enemigos = []
 proyectiles = []
+poderes = []
 
 # Lista para imagenes
 coins_images = []
 platforms_images = []
 egg_images = []
-
+power_image = []

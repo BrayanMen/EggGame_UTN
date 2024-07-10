@@ -60,7 +60,7 @@ def crear_plataforma(plataform_images: list[pygame.Surface], width_screen: int, 
     min_gap_x = 80  
     max_gap_x = 150  
     min_gap_y = 50   
-    max_gap_y = 150  
+    max_gap_y = 400  
 
     if plataformas:
         last_plataforma = plataformas[-1]["rect"]
@@ -89,7 +89,7 @@ def crear_plataforma(plataform_images: list[pygame.Surface], width_screen: int, 
             
             num_coins = random.randint(1,5)
             coins_puntos(num_coins, coins,[plataformas[-1]])
-            if random.random() < 0.09:
+            if random.random() < 0.05:
                 hearts.append(pygame.Rect(nueva_plataforma.centerx - 15, nueva_plataforma.top - 30, 30, 30))
             return
 
@@ -166,26 +166,10 @@ def wait_user(tecla):
                 if evento.key == tecla:
                     continuar = False
                     
-    en_suelo = False
-    
-    for plataforma in plataformas_list:
-        plataforma_rect = plataforma["rect"]
-        
-        # Verificar colisión desde arriba (caída)
-        if egg_rect.colliderect(plataforma_rect):
-            if egg_rect.bottom <= plataforma_rect.top and speed_y > 0:
-                egg_rect.bottom = plataforma_rect.top
-                speed_y = 0
-                en_suelo = True
-            # Verificar colisión desde abajo (saltando desde abajo)
-            elif egg_rect.top >= plataforma_rect.bottom and speed_y < 0:
-                egg_rect.top = plataforma_rect.bottom
-                speed_y = 0
-            # Verificar colisión lateral
-            if egg_rect.left < plataforma_rect.right and egg_rect.right > plataforma_rect.left:
-                if egg_rect.right > plataforma_rect.left and speed_x > 0:
-                    egg_rect.right = plataforma_rect.left
-                elif egg_rect.left < plataforma_rect.right and speed_x < 0:
-                    egg_rect.left = plataforma_rect.right
 
-    return en_suelo, speed_x, speed_y
+def lanzar_efecto_espada(rect, poderes, voltear):
+    velocidad = 10
+    if voltear:
+        velocidad = -10
+    efecto_rect = pygame.Rect(rect.centerx + (100 if not voltear else -100), rect.centery - 20, 40, 40)
+    poderes.append({"rect": efecto_rect, "velocidad": velocidad})

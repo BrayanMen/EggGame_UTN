@@ -49,10 +49,10 @@ def guardar_archivo_json(lista:list, ruta:str):
         lista (list): Recibe la lista 
         ruta (str): Recibe nombre de la ruta sin la extension
     """
-    with open(f"{ruta}.json", 'w', encoding='utf-8') as file:
+    with open(tomar_ruta_actual(f"{ruta}.json"), 'w', encoding='utf-8') as file:
         json.dump(lista, file, indent=4)
         
-def cargar_puntajes_json(ruta):
+def cargar_archivo_json(ruta):
     """
     Carga los puntajes de un archivo JSON.
     
