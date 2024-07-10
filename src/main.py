@@ -1,6 +1,9 @@
 import pygame
 import settings
 from game_functions import *
+import random
+from screens import *
+from utils import *
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -8,137 +11,102 @@ screen = pygame.display.set_mode(settings.SCREEN_SIZE)
 pygame.display.set_caption("El Huevo Enmascarado")
 pygame.display.set_icon(pygame.image.load("./src/assets/egg/eggMAsked1.png"))
 
-
-# Frame Image
-egg_frames = image_frames_list_game(egg_images, "assets/egg/eggMAsked",14, 70,70)
-EGG_RESPIRACION = [egg_frames[0],egg_frames[1]]
-EGG_CAMINAR = [egg_frames[2],egg_frames[1],egg_frames[3]]
-EGG_SALTAR = [egg_frames[4]]
-EGG_CAER = [egg_frames[5],egg_frames[1]]
-EGG_ATAQUE = [egg_frames[6],egg_frames[7],egg_frames[8],egg_frames[1]]
-EGG_ATAQUE_AIRE = [egg_frames[9],egg_frames[10],egg_frames[11],egg_frames[4]]
-EGG_ROTO = [egg_frames[12],egg_frames[13],egg_frames[14]]
+font = pygame.font.Font(font_path,48)
 
 image_egg = EGG_RESPIRACION[1]
-egg_rect = image_egg.get_rect(center = (100,500))
+egg_rect = image_egg.get_rect(center = (100,100))
 
-# platforms_frames = image_frames_list_game(platforms_images,"./assets/plataforms/plataforms")
+plataforms_list = [{"image": platforms_frames[3],"rect":pygame.Rect(0, 500, 200, 200)},
+                   {"image": platforms_frames[6],"rect":pygame.Rect(300, 300, 200, 200)}]
 
-# Background
-bg_game = image_scale_game("assets/background/night_autumn", WIDTH_SCREEN, HEIGHT_SCREEN)
+# Sounds
+click_sound = pygame.mixer.Sound(sound_click_path)
+coin_sound = pygame.mixer.Sound(sound_coin_path)
+g_over_sound = pygame.mixer.Sound(sound_over_path)
+jump_sound = pygame.mixer.Sound(sound_jump_path)
 
-# Items
-coins_frames = image_frames_list_game(coins_images,"assets/coin/goldCoin",8, 64,64)
-knife_image = image_scale_game("assets/items/knife",60,50)
+def screen_menu():
+    global is_running,screen
+    start_image = image_scale_game("assets/items/boton_start", 300, 100)
+    exit_image = image_scale_game("assets/items/boton_exit", 300, 100)
+    rank_image = image_scale_game("assets/items/boton_ranking", 300, 100)
+    options_image = image_scale_game("assets/items/boton_option", 300, 100)
+    logo_image = image_scale_game("assets/logo/logo", 250, 250)
+    
+    logo_rect = logo_image.get_rect(center=(settings.WIDTH_SCREEN // 2, 100))
+    start_rect = start_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN // 3+10))
+    options_rect = options_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN // 3 + 100))
+    rank_rect = rank_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN // 3 + 190))
+    exit_rect = exit_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN // 3 + 280))
+    
+    delay_time = 500
 
-suelo = pygame.Surface((settings.WIDTH_SCREEN, 50))
-suelo.fill((100, 100, 100))
-suelo_rect = suelo.get_rect(midtop=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN - 50))
-
-
-
-def main():
-    global is_running,FPS,frame_indice,speed_animacion,image_egg,egg_rect,voltear, speed_y, speed_x,en_suelo,esta_roto
-    global dist_caida, esta_atacando, atacando_en_el_aire, der, izq, up,proyectiles,knife_image
-    speed_x=3
-    x= 0
-    y=0
     while is_running:
+        mouse_pos = pygame.mouse.get_pos()
+
+        if start_rect.collidepoint(mouse_pos):
+            start_image_scaled = pygame.transform.scale(start_image, (360, 120))
+            start_rect_scaled = start_image_scaled.get_rect(center=start_rect.center)
+        else:
+            start_image_scaled = start_image
+            start_rect_scaled = start_rect
+
+        if options_rect.collidepoint(mouse_pos):
+            options_image_scaled = pygame.transform.scale(options_image, (360, 120))
+            options_rect_scaled = options_image_scaled.get_rect(center=options_rect.center)
+        else:
+            options_image_scaled = options_image
+            options_rect_scaled = options_rect
+            
+        if rank_rect.collidepoint(mouse_pos):
+            rank_image_scaled = pygame.transform.scale(rank_image, (360, 120))
+            rank_rect_scaled = rank_image_scaled.get_rect(center=rank_rect.center)
+        else:
+            rank_image_scaled = rank_image
+            rank_rect_scaled = rank_rect
+
+        if exit_rect.collidepoint(mouse_pos):
+            exit_image_scaled = pygame.transform.scale(exit_image, (360, 120))
+            exit_rect_scaled = exit_image_scaled.get_rect(center=exit_rect.center)
+        else:
+            exit_image_scaled = exit_image
+            exit_rect_scaled = exit_rect
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    if not esta_roto:
-                        if en_suelo:
-                            esta_atacando = True
-                        elif not suelo:
-                            atacando_en_el_aire = True
-                if event.key == pygame.K_LEFT:
-                    izq =True  
-                if event.key == pygame.K_RIGHT:
-                    der = True
-                if event.key == pygame.K_UP:
-                    up=True
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    izq = False
-                if event.key == pygame.K_RIGHT:
-                    der = False
-                if event.key == pygame.K_UP:
-                    up = False
-            
-        if izq:
-            egg_rect.x -= speed_x
-            x= egg_rect.x
-            if not voltear:
-                voltear = True
-            image_egg,frame_indice = animacion_frames(EGG_CAMINAR,frame_indice,speed_animacion)
-        if der:
-            egg_rect.x += speed_x
-            x= egg_rect.x  
-            if voltear:
-                voltear = False
-            image_egg,frame_indice = animacion_frames(EGG_CAMINAR,frame_indice,speed_animacion)
-        if up:
-            if en_suelo and not esta_roto:
-                speed_y = -15
-                en_suelo = False
-                
-        if not esta_roto:
-            speed_y += 1
-            egg_rect.y += speed_y
-            if not en_suelo:
-                if speed_y > 0:
-                    image_egg,frame_indice = animacion_frames(EGG_CAER,frame_indice,speed_animacion)
-                else:
-                    image_egg,frame_indice = animacion_frames(EGG_SALTAR,frame_indice,speed_animacion)
-            else:
-                if esta_atacando:
-                    image_egg,frame_indice = animacion_frames(EGG_ATAQUE,frame_indice,speed_animacion)
-                    esta_atacando = False
-                elif atacando_en_el_aire:
-                    image_egg,frame_indice = animacion_frames(EGG_ATAQUE_AIRE,frame_indice,0.009)
-                    atacando_en_el_aire = False
-                
-                elif not izq and not der:
-                    image_egg,frame_indice = animacion_frames(EGG_RESPIRACION,frame_indice,0.03)
-                        
-                                                
-        if egg_rect.colliderect(suelo_rect):
-            if dist_caida >= 10:
-                egg_rect.bottom = suelo_rect.top
-                speed_y = 0
-                en_suelo = True
-                esta_roto = True
-                image_egg = animacion_frames(EGG_ROTO, frame_indice, speed_animacion)
-            else:
-                egg_rect.bottom = suelo_rect.top
-                speed_y = 0
-                en_suelo = True
-                dist_caida = 0
-        
-        for cuchillo in proyectiles[:]:
-                cuchillo.x -= 2
-                # if egg_rect.colliderect(cuchillo):
-                #     vidas -= 1
-                #     proyectiles.remove(cuchillo)
-        if random.randint(0, 500) < 2:
-                lanzar_cuchillos(proyectiles)
-                        
-                
-        screen.blit(bg_game,(0,0))
-        for cuchillo in proyectiles:
-            screen.blit(knife_image, cuchillo.topleft)
-        screen.blit(suelo, suelo_rect.topleft)
-        
-        if voltear:
-            screen.blit(pygame.transform.flip(image_egg, True, False), egg_rect)
-        else:
-            screen.blit(image_egg, egg_rect)
-    
-        pygame.display.flip()
-        clock.tick(FPS)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if start_rect_scaled.collidepoint(mouse_pos):
+                    pygame.time.delay(delay_time)
+                    click_sound.play()
+                    main(screen)
+                elif options_rect_scaled.collidepoint(mouse_pos):
+                    click_sound.play()
+                    pygame.time.delay(delay_time)
+                    options_screen(screen)
+                elif rank_rect_scaled.collidepoint(mouse_pos):
+                    click_sound.play()
+                    pygame.time.delay(delay_time)
+                    ranking_screen(screen)
+                elif exit_rect_scaled.collidepoint(mouse_pos):
+                    click_sound.play()                    
+                    pygame.time.delay(delay_time)
+                    is_running = False
 
+            if event.type == pygame.MOUSEMOTION:
+                if start_rect_scaled.collidepoint(mouse_pos) or options_rect_scaled.collidepoint(mouse_pos) or exit_rect_scaled.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                else:
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+        screen.blit(bg_game, (0, 0))
+        screen.blit(logo_image, logo_rect.topleft)
+        screen.blit(start_image_scaled, start_rect_scaled.topleft)
+        screen.blit(rank_image_scaled, rank_rect_scaled.topleft)
+        screen.blit(options_image_scaled, options_rect_scaled.topleft)
+        screen.blit(exit_image_scaled, exit_rect_scaled.topleft)
+        
+        pygame.display.update()
+    
 if __name__ == "__main__":
-    main()
+    screen_menu()

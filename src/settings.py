@@ -1,3 +1,6 @@
+import pygame
+import os
+
 WIDTH_SCREEN = 800
 HEIGHT_SCREEN = 600
 SCREEN_SIZE = (WIDTH_SCREEN, HEIGHT_SCREEN)
@@ -24,7 +27,7 @@ coin_indice = 0
 speed_coin_animacion = 0.04
 
 # Variables de Interaccion
-
+puntaje_acc = 0
 puntaje = 0
 vidas = 3
 
@@ -43,8 +46,10 @@ up = False
 # Listas del Juego
 
 coins = []
+hearts = []
 enemigos = []
 proyectiles = []
+
 # Lista para imagenes
 coins_images = []
 platforms_images = []
