@@ -171,7 +171,7 @@ def main(screen):
             pause_scaled = pause_image
             pause_rect_scaled = pause_rect
             
-        for event in pygame.event.get():
+        for event in pygame.event.get():            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -371,16 +371,12 @@ def options_screen(screen):
     global font
     is_running_options = True
     clock = pygame.time.Clock()
+    base_path = os.path.dirname(__file__)
 
     back_image = image_scale_game("assets/items/boton_back", 300, 100)
     back_rect = back_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN - 100))
 
-    canciones_json = cargar_archivo_json("musica")
-    
-    base_path = os.path.dirname(__file__)
-         
-    # Inicializar la música
-    current_song = None
+    canciones_json = cargar_archivo_json("musica")         
     pygame.mixer.music.load(os.path.join(base_path, "./assets/music/" + canciones_json[0]["musica"]))
     pygame.mixer.music.play(-1)  
 

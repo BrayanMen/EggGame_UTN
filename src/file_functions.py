@@ -18,8 +18,13 @@ def cargar_archivo_csv(archivo: str):
     """
     lista = []
     with open(tomar_ruta_actual(f"{archivo}.csv"), 'r', encoding='utf-8') as archivo_csv:
-        lector = csv.DictReader(archivo_csv)
-        for fila in lector:
+        encabezados = archivo_csv.readline().strip().split(',')
+
+        for linea in archivo_csv:
+            valores = linea.strip().split(',')
+            fila = {}
+            for i in range(len(encabezados)):
+                fila[encabezados[i]] = valores[i]
             fila['nombre'] = fila['nombre']
             fila['puntaje'] = int(fila['puntaje'])
             lista.append(fila)
