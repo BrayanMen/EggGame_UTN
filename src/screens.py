@@ -376,7 +376,8 @@ def options_screen(screen):
     back_image = image_scale_game("assets/items/boton_back", 300, 100)
     back_rect = back_image.get_rect(center=(settings.WIDTH_SCREEN // 2, settings.HEIGHT_SCREEN - 100))
 
-    canciones_json = cargar_archivo_json("musica")         
+    canciones_json = cargar_archivo_json("musica")    
+         
     pygame.mixer.music.load(os.path.join(base_path, "./assets/music/" + canciones_json[0]["musica"]))
     pygame.mixer.music.play(-1)  
 

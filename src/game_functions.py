@@ -166,7 +166,6 @@ def wait_user(tecla):
                 if evento.key == tecla:
                     continuar = False
                     
-
 def lanzar_efecto_espada(rect, poderes, voltear):
     velocidad = 10
     if voltear:
