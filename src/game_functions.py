@@ -171,5 +171,5 @@ def lanzar_efecto_espada(rect, poderes, voltear):
     velocidad = 10
     if voltear:
         velocidad = -10
-    efecto_rect = pygame.Rect(rect.centerx + (100 if not voltear else -100), rect.centery - 20, 40, 40)
+    efecto_rect = pygame.Rect(rect.centerx, rect.centery - 20, 40, 40)
     poderes.append({"rect": efecto_rect, "velocidad": velocidad})

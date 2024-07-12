@@ -183,7 +183,7 @@ def main(screen):
                             lanzar_efecto_espada(egg_rect, poderes, voltear)
                         elif not en_suelo:
                             atacando_en_el_aire = True
-                            lanzar_efecto_espada(egg_rect, poderes, voltear)
+                            # lanzar_efecto_espada(egg_rect, poderes, voltear)
                 if event.key == pygame.K_LEFT:
                     izq =True  
                 if event.key == pygame.K_RIGHT:
@@ -316,7 +316,7 @@ def main(screen):
                 
         for poder in poderes[:]:
             poder["rect"].x += poder["velocidad"]
-            if poder["rect"].right < 0 or poder["rect"].left > WIDTH_SCREEN:
+            if abs(poder["rect"].centerx - egg_rect.centerx) > 100:
                 poderes.remove(poder)
             else:
                 for cuchillo in proyectiles[:]:
